@@ -1,166 +1,107 @@
-/* src/styles.css */
-
+/* General styles for the app */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
-  color: #333;
   margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
   padding: 0;
 }
 
-nav {
-  background-color: #ff5722;
-  color: #fff;
-  padding: 10px;
-  text-align: center;
+h1, h2, h3 {
+  color: #444;
 }
 
-nav a {
-  color: #fff;
-  margin: 0 15px;
+a {
   text-decoration: none;
-  font-weight: bold;
+  color: #fff; /* Link color changed to white */
 }
 
-nav a:hover {
+a:hover {
   text-decoration: underline;
+  color: #f1f1f1; /* Lighter color on hover */
 }
 
-.restaurant-list {
+/* Header styles */
+header {
+  background-color: #343a40;
+  color: #fff;
+  padding: 15px 20px;
+}
+
+header h1 {
+  margin: 0;
+}
+
+header nav ul {
+  list-style: none;
+  padding: 0;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  padding: 20px;
+  gap: 15px;
 }
 
-.restaurant-card {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  padding: 15px;
-  text-align: center;
-  width: 250px;
+header nav ul li {
+  display: inline;
 }
 
-.restaurant-card img {
+/* Footer styles */
+footer {
+  background-color: #343a40;
+  color: #fff;
+  padding: 10px 20px;
+  position: fixed;
+  bottom: 0;
   width: 100%;
   height: 150px;
   object-fit: cover;
   border-radius: 8px 8px 0 0;
 }
 
-.restaurant-card h3 {
-  color: #ff5722;
-  font-size: 1.2em;
-  margin: 10px 0;
+footer ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 0;
 }
 
-.restaurant-card p {
-  color: #666;
-  font-size: 0.9em;
+footer ul li {
+  display: inline;
 }
 
-button {
-  background-color: #ff5722;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-size: 0.9em;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #e64a19;
-}
-
-.cart {
-  padding: 20px;
+/* Home page styles */
+h1 {
   text-align: center;
+  margin-top: 20px;
 }
 
-.cart-item {
+/* Navigation Styles */
+nav ul {
+  list-style: none;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #ddd;
-  padding: 10px 0;
+  justify-content: center;
+  gap: 15px;
+  padding: 0;
+  background-color: #007bff; /* Background color set to blue */
+  padding: 10px 0; /* Add some padding to the nav bar */
+  border-radius: 5px; /* Optional: Rounded corners for the nav bar */
+}
+.nav-ul{
+  background-color:blue;
 }
 
-.checkout-container {
-  padding: 20px;
-  max-width: 400px;
-  margin: 0 auto;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+nav ul li {
+  margin: 0;
 }
 
-.checkout-container h2, .checkout-container h3 {
-  color: #ff5722;
-}
-
-.checkout-container label {
+/* Navigation Link Styles */
+nav ul li a {
+  color: #fff; /* White text color for links */
+  font-size: 1.1em;
+  padding: 10px 15px; /* Padding around the links */
   display: block;
-  margin: 10px 0 5px;
-  font-weight: bold;
 }
 
-.checkout-container input,
-.checkout-container textarea {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-bottom: 15px;
+nav ul li a:hover {
+  background-color: #0056b3; /* Dark blue on hover */
+  color: #f1f1f1; /* Light color for text on hover */
 }
-
-.checkout-container button {
-  width: 100%;
-  background-color: #4caf50;
-}
-
-.checkout-container button:hover {
-  background-color: #388e3c;
-}
-
-/* src/App.css */
-
-/* Restaurant card image styling */
-/* src/App.css */
-
-/* .restaurant-card img {
-  width: 150px !important;
-  height: 100px !important;
-  object-fit: cover !important;
-  border-radius: 8px !important;
-}
-
-.menu-item img {
-  width: 100px !important;
-  height: 100px !important;
-  object-fit: cover !important;
-  border-radius: 8px !important;
-}
-/* Horizontal layout for menu items */
-/* .menu-items {
-  display: flex;
-  flex-direction: row; /* Arrange items in a row */
-  /*  */
-
-/* Restrict the image size */
-/* src/App.css */
-
-/* Restrict the image size for small images */
-.small-image {
-  width: 150px; /* Set a fixed width */
-  height: 100px; /* Set a fixed height */
-  object-fit: cover; /* Ensure the image fills the area without distortion */
-  border-radius: 8px;
-}
-
-
-

@@ -1,28 +1,55 @@
-// src/components/Cart.js
-import React from 'react';
-import './App.css';
+// Cart Component
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-function Cart({ cart, total, onRemoveItem }) {
+const Cart = () => {
+  const [cartItems, setCartItems] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Retrieve cart items from localStorage
+    const storedCart = JSON.parse(localStorage.getItem('cart')) || [];
+    setCartItems(storedCart);
+  }, []);
+
+  const handleRemoveItem = (id) => {
+    const updatedCart = cartItems.filter((item) => item._id !== id);
+    setCartItems(updatedCart);
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+  };
+
+  const handleCheckout = () => {
+    // Handle checkout logic here
+    alert('Proceeding to checkout!');
+    navigate('/checkout');  // Redirect to checkout page
+  };
+
   return (
     <div>
-      <h2>Your Cart</h2>
-      {cart.length === 0 ? (
-        <p>Your cart is empty.</p>
+      <h1>Your Cart</h1>
+      {cartItems.length === 0 ? (
+        <p>Your cart is empty</p>
       ) : (
-        <div>
-          {cart.map((item) => (
-            <div key={item.id} className="cart-item">
+        <ul>
+          {cartItems.map((item) => (
+            <li key={item._id}>
               <h3>{item.name}</h3>
-              <p>Price: ${item.price.toFixed(2)}</p>
-              <p>Quantity: {item.quantity}</p>
-              <button onClick={() => onRemoveItem(item)}>Remove</button>
-            </div>
+              <p>{item.description}</p>
+              <p>Price: ${item.price}</p>
+              <p>Category: {item.category}</p>
+              {item.image && <img src={item.image} alt={item.name} width="100" />}
+              <button onClick={() => handleRemoveItem(item._id)}>Remove</button>
+            </li>
           ))}
-          <h3>Total Amount: ${total.toFixed(2)}</h3>
+        </ul>
+      )}
+      {cartItems.length > 0 && (
+        <div>
+          <button onClick={handleCheckout}>Proceed to Checkout</button>
         </div>
       )}
     </div>
   );
-}
+};
 
 export default Cart;

@@ -1,48 +1,60 @@
-// Register.js
-// import React, { useState } from 'react';
-// import './App.css';
+// Register.jsx
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-// function Register() {
-//   const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+const Register = () => {
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate(); // Hook to navigate to a different page
 
-//   const handleChange = (e) => {
-//     setFormData({ ...formData, [e.target.name]: e.target.value });
-//   };
+  const handleRegister = async (e) => {
+    e.preventDefault();
 
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     alert('Registration Successful!');
-//   };
+    try {
+      // Send the registration request
+      const response = await axios.post("http://localhost:5000/api/users/register", {
+        username,
+        email,
+        password,
+      });
 
-//   return (
-//     <div>
-//       <h2>Register</h2>
-//       <form onSubmit={handleSubmit}>
-//         <label>Name</label>
-//         <input
-//           type="text"
-//           name="name"
-//           value={formData.name}
-//           onChange={handleChange}
-//         />
-//         <label>Email</label>
-//         <input
-//           type="email"
-//           name="email"
-//           value={formData.email}
-//           onChange={handleChange}
-//         />
-//         <label>Password</label>
-//         <input
-//           type="password"
-//           name="password"
-//           value={formData.password}
-//           onChange={handleChange}
-//         />
-//         <button type="submit">Register</button>
-//       </form>
-//     </div>
-//   );
-// }
+      console.log(response.data.message); // Log the success message from the server
 
-// export default Register;
+      // After successful registration, redirect to the Login page
+      navigate("/login");
+    } catch (err) {
+      setError(err.response ? err.response.data.message : "Server error");
+    }
+  };
+
+  return (
+    <form onSubmit={handleRegister}>
+      <h2>Register</h2>
+      <input
+        type="text"
+        placeholder="Username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+      />
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+      <button type="submit">Register</button>
+      {error && <p>{error}</p>}
+    </form>
+  );
+};
+
+export default Register;

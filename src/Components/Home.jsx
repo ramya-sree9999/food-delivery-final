@@ -5,20 +5,22 @@ import './App.css';
 
 
 function Home() {
+  
   return (
     <div>
       <h1>Welcome to Swiggy</h1>
-      <p>Your favorite food delivered to your doorstep!</p>
+      {/* <h2>Your favorite food delivered to your doorstep!</h2> */}
+      {/* <button onClick={handleViewRestaurants}>View Restaurants</button> */}
       
       {/* Navigation Links */}
       <nav>
-        <ul>
+        <ul classname="nav-ul">
           <li><Link to="/">Home</Link></li>
           <li><Link to="/restaurant-list">Restaurant List</Link></li>
           <li><Link to="/cart">Cart</Link></li>
           <li><Link to="/checkout">Checkout</Link></li>
-          <li><Link to="/login">Login</Link></li>
-          <li><Link to="/register">Register</Link></li>
+          {/* <li><Link to="/login">Login</Link></li>
+          <li><Link to="/register">Register</Link></li> */}
         </ul>
       </nav>
     </div>

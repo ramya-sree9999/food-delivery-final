@@ -1,72 +1,192 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import './App.css';
-// import restaurantImage from './assets/images/restaurant.jpg';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Import useNavigate instead of useHistory
 
-function RestaurantList() {
-  const [restaurants, setRestaurants] = useState([
-    { id: 1, name: 'Restaurant A', image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8u6jHz8gC4PZJ8x7Ci01wbckQoQvXs3EKvw&s", description: 'A great place for pizza.' },
-    { id: 2, name: 'Restaurant B', image: 'https://content.jdmagicbox.com/v2/comp/hyderabad/w9/040pxx40.xx40.221019141008.k9w9/catalogue/thangedu-raidurgam-hyderabad-restaurants-f6xc3nb6kq.jpg', description: 'Delicious burgers and fries.' },
-    { id: 3, name: 'Restaurant C', image: 'https://media-cdn.tripadvisor.com/media/photo-s/12/6a/ae/90/bawarchi-front-view-of.jpg', description: 'Fresh sushi and ramen.' },
-  ]);
+const Restaurant = () => {
+  const [restaurants, setRestaurants] = useState([]);
+  const [form, setForm] = useState({ _id: "", name: "", image: "", description: "", rating: "" });
+  const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [formError, setFormError] = useState(""); // Form validation error state
+  const navigate = useNavigate(); // Replace useHistory with useNavigate
 
-  const [editing, setEditing] = useState(false);
-  const [currentRestaurant, setCurrentRestaurant] = useState({ id: null, name: '', description: '', image: '' });
-
-  const handleEditClick = (restaurant) => {
-    setEditing(true);
-    setCurrentRestaurant(restaurant);
-  };
-
-  const handleSave = () => {
-    if (currentRestaurant.id) {
-      setRestaurants(restaurants.map((res) => (res.id === currentRestaurant.id ? currentRestaurant : res)));
-    } else {
-      setRestaurants([...restaurants, { ...currentRestaurant, id: Date.now() }]);
+  // Fetch all restaurants
+  const fetchRestaurants = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get("http://localhost:5000/api/restaurants/");
+      setRestaurants(response.data);
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to fetch restaurants");
+      setLoading(false);
     }
-    setEditing(false);
-    setCurrentRestaurant({ id: null, name: '', description: '', image: '' });
   };
+
+  useEffect(() => {
+    fetchRestaurants();
+  }, []);
+
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+    setFormError(""); // Reset form error when user starts typing
+  };
+
+  // Validate the form
+  const validateForm = () => {
+    if (!form.name || !form.image || !form.description || !form.rating) {
+      setFormError("All fields are required.");
+      return false;
+    }
+    if (form.rating < 1 || form.rating > 5) {
+      setFormError("Rating must be between 1 and 5.");
+      return false;
+    }
+    return true;
+  };
+
+  // Add a new restaurant
+  const handleAddRestaurant = async () => {
+    if (!validateForm()) return; // Only proceed if the form is valid
+    try {
+      setLoading(true);
+      await axios.post("http://localhost:5000/api/restaurants/", form);
+      fetchRestaurants();
+      setForm({ _id: "", name: "", image: "", description: "", rating: "" });
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to add restaurant");
+      setLoading(false);
+    }
+  };
+
+  // Set the form data for editing
+  const handleEditRestaurant = (restaurant) => {
+    setEditMode(true);
+    setForm(restaurant);
+  };
+
+  // Update an existing restaurant
+  const handleUpdateRestaurant = async () => {
+    if (!validateForm()) return; // Only proceed if the form is valid
+    try {
+      setLoading(true);
+      const { _id } = form;
+      await axios.put(`http://localhost:5000/api/restaurants/${_id}`, form);
+      fetchRestaurants();
+      setForm({ _id: "", name: "", image: "", description: "", rating: "" });
+      setEditMode(false);
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to update restaurant");
+      setLoading(false);
+    }
+  };
+
+  // Cancel edit mode
+  const handleCancelEdit = () => {
+    setEditMode(false);
+    setForm({ _id: "", name: "", image: "", description: "", rating: "" });
+  };
+
+  // Delete a restaurant
+  const handleDeleteRestaurant = async (id) => {
+    try {
+      setLoading(true);
+      await axios.delete(`http://localhost:5000/api/restaurants/${id}`);
+      fetchRestaurants();
+      setLoading(false);
+    } catch (err) {
+      setError("Failed to delete restaurant");
+      setLoading(false);
+    }
+  };
+
+  // View Menu (Navigate to the menu page)
+  const handleViewMenu = (id) => {
+    // Navigate to the menu page for the restaurant
+    navigate(`/menu/${id}`); // Use navigate to go to the menu page
+  };
+
+  // Get user role from localStorage
+  const userRole = localStorage.getItem("role");
 
   return (
-    <div className="restaurant-list">
-      <h2>Restaurant List</h2>
-      <button onClick={() => setEditing(true)}>Add Restaurant</button>
-      {editing && (
-        <div>
+    <div className="restaurant-management">
+      <h1>Restaurant Management</h1>
+
+      {/* Show Add Restaurant form only if user is admin */}
+      {userRole === "admin" && (
+        <div className="restaurant-form">
           <input
             type="text"
+            name="name"
             placeholder="Name"
-            value={currentRestaurant.name}
-            onChange={(e) => setCurrentRestaurant({ ...currentRestaurant, name: e.target.value })}
-          />
-          <textarea
-            placeholder="Description"
-            value={currentRestaurant.description}
-            onChange={(e) => setCurrentRestaurant({ ...currentRestaurant, description: e.target.value })}
+            value={form.name}
+            onChange={handleInputChange}
           />
           <input
             type="text"
+            name="image"
             placeholder="Image URL"
-            value={currentRestaurant.image}
-            onChange={(e) => setCurrentRestaurant({ ...currentRestaurant, image: e.target.value })}
+            value={form.image}
+            onChange={handleInputChange}
           />
-          <button onClick={handleSave}>Save</button>
+          <input
+            type="text"
+            name="description"
+            placeholder="Description"
+            value={form.description}
+            onChange={handleInputChange}
+          />
+          <input
+            type="number"
+            name="rating"
+            placeholder="Rating (1-5)"
+            value={form.rating}
+            onChange={handleInputChange}
+          />
+          {formError && <p className="form-error">{formError}</p>} {/* Display form error */}
+          {editMode ? (
+            <>
+              <button onClick={handleUpdateRestaurant} disabled={loading}>Update Restaurant</button>
+              <button onClick={handleCancelEdit}>Cancel</button>
+            </>
+          ) : (
+            <button onClick={handleAddRestaurant} disabled={loading}>Add Restaurant</button>
+          )}
         </div>
       )}
-      {restaurants.map((restaurant) => (
-        <div key={restaurant.id} className="restaurant-card">
-          <img src={restaurant.image} alt={restaurant.name} />
-          <h3>{restaurant.name}</h3>
-          <p>{restaurant.description}</p>
-          <button onClick={() => handleEditClick(restaurant)}>Edit</button>
-          <Link to={`/menu/${restaurant.id}`}>
-            <button>View Menu</button>
-          </Link>
-        </div>
-      ))}
+
+      {/* Display loading or error messages */}
+      {loading && <p>Loading...</p>}
+      {error && <p className="error">{error}</p>}
+
+      {/* Restaurant list */}
+      <div className="restaurant-container">
+        {restaurants.map((restaurant) => (
+          <div key={restaurant._id} className="restaurant-card">
+            <img src={restaurant.image} alt={restaurant.name} className="restaurant-image" />
+            <div className="restaurant-info">
+              <h2>{restaurant.name}</h2>
+              <p>{restaurant.description}</p>
+              <p>Rating: {restaurant.rating}</p>
+              {userRole === "admin" && (
+                <>
+                  <button onClick={() => handleEditRestaurant(restaurant)} disabled={loading}>Edit</button>
+                  <button onClick={() => handleDeleteRestaurant(restaurant._id)} disabled={loading}>Delete</button>
+                </>
+              )}
+              <button onClick={() => handleViewMenu(restaurant._id)} disabled={loading}>View Menu</button>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
-}
+};
 
-export default RestaurantList;
+export default Restaurant;

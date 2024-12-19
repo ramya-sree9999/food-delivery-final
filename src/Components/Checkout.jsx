@@ -49,7 +49,7 @@ function Checkout() {
 
   return (
     <div>
-      <h2>Checkout</h2>
+      <h2 className="checkout-heading">Checkout</h2>
       <form onSubmit={handleSubmit} className="checkout-form">
         <div>
           <label htmlFor="cardNumber">Card Number:</label>
@@ -60,7 +60,7 @@ function Checkout() {
             value={formData.cardNumber}
             onChange={handleChange}
           />
-          {errors.cardNumber && <p className="error">{errors.cardNumber}</p>}
+          {errors.cardNumber && <p className="error">Card number must be 16 digits.</p>}
         </div>
         <div>
           <label htmlFor="cardHolder">Card Holder Name:</label>
@@ -71,7 +71,7 @@ function Checkout() {
             value={formData.cardHolder}
             onChange={handleChange}
           />
-          {errors.cardHolder && <p className="error">{errors.cardHolder}</p>}
+          {errors.cardHolder && <p className="error">Card holder name is required.</p>}
         </div>
         <div>
           <label htmlFor="expiryDate">Expiry Date (MM/YY):</label>
@@ -82,7 +82,7 @@ function Checkout() {
             value={formData.expiryDate}
             onChange={handleChange}
           />
-          {errors.expiryDate && <p className="error">{errors.expiryDate}</p>}
+          {errors.expiryDate && <p className="error">Expiry date must be in MM/YY format.</p>}
         </div>
         <div>
           <label htmlFor="cvv">CVV:</label>
@@ -93,7 +93,7 @@ function Checkout() {
             value={formData.cvv}
             onChange={handleChange}
           />
-          {errors.cvv && <p className="error">{errors.cvv}</p>}
+          {errors.cvv && <p className="error">CVV must be three characters.</p>}
         </div>
         <button type="submit">Place Order</button>
       </form>
